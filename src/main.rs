@@ -1,7 +1,6 @@
 use std::io::Read;
 fn main() {
-    let input = std::io::stdin()
-        .bytes()
-        .next().unwrap();
-        println!("{:?}", input);
+    while 'q' as u8 != std::io::stdin().bytes().next().unwrap().unwrap() {
+
+    }
 }
