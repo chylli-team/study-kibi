@@ -25,8 +25,8 @@ fn enable_raw_mode() -> Result<termios::Termios, Error> {
 }
 fn main() {
     enable_raw_mode();
-    println!("{:?}", std::io::stdin().bytes().next());
-    //while 'q' as u8 != std::io::stdin().bytes().next()? {
+    //println!("{:?}", std::io::stdin().bytes().next());
+    while 'q' as u8 != std::io::stdin().bytes().next().unwrap().unwrap() {
 
-//    }
+    }
 }
