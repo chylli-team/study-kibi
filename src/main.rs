@@ -23,10 +23,20 @@ fn enable_raw_mode() -> Result<termios::Termios, Error> {
     set_termios(&term)?;
     Ok(orig_termios)
 }
+
+fn disable_raw_mode(term:&termios::Termios) -> Result<(), Error>{
+   set_termios(term);
+    Ok(())
+}
+
 fn main() {
-    enable_raw_mode();
+    let old_term = match enable_raw_mode() {
+        Ok(term) => term,
+        Err(error) => panic!("Error when enable raw mode: {}", error),
+    };
     //println!("{:?}", std::io::stdin().bytes().next());
     while 'q' as u8 != std::io::stdin().bytes().next().unwrap().unwrap() {
 
     }
+    disable_raw_mode(&old_term);
 }
