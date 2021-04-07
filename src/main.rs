@@ -1,5 +1,5 @@
 use std::io::Read;
-use libc::{STDIN_FILENO, STDOUT_FILENO, TIOCGWINSZ, VMIN, VTIME, ECHO};
+use libc::{STDIN_FILENO, STDOUT_FILENO, TIOCGWINSZ, VMIN, VTIME, ECHO, ICANON};
 use nix::{pty::Winsize, sys::termios};
 use study_kibi::{ansi_escape::*, Error};
 
@@ -20,6 +20,7 @@ fn enable_raw_mode() -> Result<termios::Termios, Error> {
     //term.control_chars[VTIME] = 1;
     //term.local_flags.insert(termios::LocalFlags::ECHO);
     term.local_flags.remove(termios::LocalFlags::ECHO);
+    term.local_flags.remove(termios::LocalFlags::ICANON);
     set_termios(&term)?;
     Ok(orig_termios)
 }
