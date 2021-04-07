@@ -23,7 +23,8 @@ fn enable_raw_mode() -> Result<termios::Termios, Error> {
     for flag in flags.iter(){
         term.local_flags.remove(*flag);
     }
-    set_termios(&term)?;
+    term.input_flags.remove(termios::InputFlags::IXON);
+    set_termios(&term);
     Ok(orig_termios)
 }
 
