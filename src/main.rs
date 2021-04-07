@@ -1,5 +1,5 @@
 use std::io::Read;
-use libc::{STDIN_FILENO, STDOUT_FILENO, TIOCGWINSZ, VMIN, VTIME, ECHO, ICANON};
+use libc::{STDIN_FILENO, STDOUT_FILENO, TIOCGWINSZ, VMIN, VTIME, ECHO, ICANON, iscntrl};
 use nix::{pty::Winsize, sys::termios};
 use study_kibi::{ansi_escape::*, Error};
 
@@ -36,8 +36,25 @@ fn main() {
         Err(error) => panic!("Error when enable raw mode: {}", error),
     };
     //println!("{:?}", std::io::stdin().bytes().next());
-    while 'q' as u8 != std::io::stdin().bytes().next().unwrap().unwrap() {
+    for ch in std::io::stdin().bytes() {
+        let ch = match ch {
+            Ok(ch) => ch as char,
+            Err(error) => panic!("Error when read from stdin: {}", error),
+        };
 
+        if ch == 'q' {
+            break;
+        }
+        let is_cntrl;
+        unsafe {
+            is_cntrl = iscntrl(ch as i32) == 0;
+        }
+        if is_cntrl{
+            println!("{}", ch);
+        }
+        else{
+            println!("{:x}", ch as u8);
+        }
     }
     disable_raw_mode(&old_term);
 }
