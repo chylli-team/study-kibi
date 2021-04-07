@@ -1,6 +1,6 @@
 use std::io::Read;
 use libc::{STDIN_FILENO, STDOUT_FILENO, TIOCGWINSZ, VMIN, VTIME, iscntrl};
-use nix::{pty::Winsize, sys::termios};
+use nix::{pty::Winsize, sys::termios, sys::termios::LocalFlags};
 use study_kibi::{ansi_escape::*, Error};
 
 fn set_termios(term:&termios::Termios) -> Result<(), nix::Error>{
@@ -19,9 +19,10 @@ fn enable_raw_mode() -> Result<termios::Termios, Error> {
     // Set the timeout in deciseconds for non-canonical reads
     //term.control_chars[VTIME] = 1;
     //term.local_flags.insert(termios::LocalFlags::ECHO);
-    term.local_flags.remove(termios::LocalFlags::ECHO);
-    term.local_flags.remove(termios::LocalFlags::ICANON);
-    term.local_flags.remove(termios::LocalFlags::ISIG);
+    let flags = [LocalFlags::ECHO, LocalFlags::ICANON, LocalFlags::ISIG];
+    for flag in flags.iter(){
+        term.local_flags.remove(*flag);
+    }
     set_termios(&term)?;
     Ok(orig_termios)
 }
