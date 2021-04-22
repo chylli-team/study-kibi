@@ -19,7 +19,7 @@ fn enable_raw_mode() -> Result<termios::Termios, Error> {
     // Set the timeout in deciseconds for non-canonical reads
     //term.control_chars[VTIME] = 1;
     //term.local_flags.insert(termios::LocalFlags::ECHO);
-    let flags = [LocalFlags::ECHO, LocalFlags::ICANON, LocalFlags::ISIG];
+    let flags = [LocalFlags::ECHO, LocalFlags::ICANON, LocalFlags::ISIG, LocalFlags::IEXTEN];
     for flag in flags.iter(){
         term.local_flags.remove(*flag);
     }
@@ -56,7 +56,7 @@ fn main() {
             println!("{}", ch);
         }
         else{
-            println!("{:x}", ch as u8);
+            println!("0x{:02x}", ch as u8);
         }
     }
     disable_raw_mode(&old_term);
