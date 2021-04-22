@@ -57,10 +57,10 @@ fn main() {
             is_cntrl = iscntrl(ch as i32) == 0;
         }
         if is_cntrl{
-            println!("{}", ch);
+            print!("{}\r\n", ch);
         }
         else{
-            println!("0x{:02x}", ch as u8);
+            print!("0x{:02x}\r\n", ch as u8);
         }
     }
     disable_raw_mode(&old_term);
