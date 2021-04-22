@@ -1,6 +1,6 @@
 use std::io::Read;
 use libc::{STDIN_FILENO, STDOUT_FILENO, TIOCGWINSZ, VMIN, VTIME, iscntrl};
-use nix::{pty::Winsize, sys::termios, sys::termios::LocalFlags};
+use nix::{pty::Winsize, sys::termios, sys::termios::LocalFlags, sys::termios::InputFlags};
 use study_kibi::{ansi_escape::*, Error};
 
 fn set_termios(term:&termios::Termios) -> Result<(), nix::Error>{
@@ -23,7 +23,10 @@ fn enable_raw_mode() -> Result<termios::Termios, Error> {
     for flag in flags.iter(){
         term.local_flags.remove(*flag);
     }
-    term.input_flags.remove(termios::InputFlags::IXON);
+    let flags = [InputFlags::IXON,  InputFlags::ICRNL];
+    for flag in flags.iter(){
+        term.input_flags.remove(*flag);
+    }
     set_termios(&term);
     Ok(orig_termios)
 }
